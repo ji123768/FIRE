@@ -1,0 +1,5 @@
+{
+  "name": "Lumière Fireworks",
+  "description": "An interactive, high-performance particle physics simulation where users can create dazzling firework displays with a mouse click.",
+  "requestFramePermissions": []
+}
