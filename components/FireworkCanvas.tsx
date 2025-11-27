@@ -71,6 +71,10 @@ const FireworkCanvas: React.FC<FireworkCanvasProps> = ({ config }) => {
   const constellationsRef = useRef<Constellation[]>([]);
   const animationFrameRef = useRef<number>();
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Interaction state
+  const isInteractionActive = useRef(false);
+  const lastLaunchTime = useRef(0);
 
   // Helper to generate random number
   const random = (min: number, max: number) => Math.random() * (max - min) + min;
@@ -401,22 +405,65 @@ const FireworkCanvas: React.FC<FireworkCanvasProps> = ({ config }) => {
     };
   }, [render]);
 
-  // Click Handler
-  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Interaction Handlers
+  const handleInteraction = useCallback((clientX: number, clientY: number) => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    // Instead of immediate explosion, launch a rocket
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     launchRocket(x, y);
+  }, [launchRocket]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isInteractionActive.current = true;
+    handleInteraction(e.clientX, e.clientY);
+    lastLaunchTime.current = Date.now();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isInteractionActive.current) return;
+    
+    const now = Date.now();
+    // Throttle density: spawn every ~40ms while dragging
+    if (now - lastLaunchTime.current > 40) { 
+        handleInteraction(e.clientX, e.clientY);
+        lastLaunchTime.current = now;
+    }
+  };
+
+  const handleMouseUp = () => {
+    isInteractionActive.current = false;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    isInteractionActive.current = true;
+    const touch = e.touches[0];
+    handleInteraction(touch.clientX, touch.clientY);
+    lastLaunchTime.current = Date.now();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isInteractionActive.current) return;
+    
+    const now = Date.now();
+    if (now - lastLaunchTime.current > 40) { 
+        const touch = e.touches[0];
+        handleInteraction(touch.clientX, touch.clientY);
+        lastLaunchTime.current = now;
+    }
   };
 
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0 w-full h-full cursor-pointer z-0"
-      onClick={handleCanvasClick}
+      className="absolute inset-0 w-full h-full cursor-pointer z-0 touch-none"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseUp}
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
     </div>
