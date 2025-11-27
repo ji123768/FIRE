@@ -24,6 +24,7 @@ const Controls: React.FC<ControlsProps> = ({ config, onConfigChange }) => {
         hueVariance: 30,
         baseSize: 2,
         trailEffect: true,
+        starfield: true,
      });
   };
 
@@ -149,15 +150,28 @@ const Controls: React.FC<ControlsProps> = ({ config, onConfigChange }) => {
           />
         </div>
 
-        {/* Toggle Trails */}
-        <div className="flex items-center justify-between pt-2">
-            <label className="text-sm text-white/90">Motion Trails</label>
-            <button 
-                onClick={() => handleChange('trailEffect', !config.trailEffect)}
-                className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out ${config.trailEffect ? 'bg-indigo-600' : 'bg-white/20'}`}
-            >
-                <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${config.trailEffect ? 'translate-x-6' : 'translate-x-0'}`} />
-            </button>
+        <div className="grid grid-cols-2 gap-4 pt-2">
+            {/* Toggle Trails */}
+            <div className="flex flex-col gap-2">
+                <label className="text-xs text-white/70 uppercase tracking-wide">Motion Trails</label>
+                <button 
+                    onClick={() => handleChange('trailEffect', !config.trailEffect)}
+                    className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out relative ${config.trailEffect ? 'bg-indigo-600' : 'bg-white/20'}`}
+                >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${config.trailEffect ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+            </div>
+
+            {/* Toggle Starfield */}
+             <div className="flex flex-col gap-2">
+                <label className="text-xs text-white/70 uppercase tracking-wide">Starfield</label>
+                <button 
+                    onClick={() => handleChange('starfield', !config.starfield)}
+                    className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out relative ${config.starfield ? 'bg-indigo-600' : 'bg-white/20'}`}
+                >
+                    <div className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${config.starfield ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+            </div>
         </div>
       </div>
     </div>

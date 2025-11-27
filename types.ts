@@ -23,4 +23,5 @@ export interface FireworkConfig {
   hueVariance: number;
   baseSize: number;
   trailEffect: boolean;
+  starfield: boolean;
 }

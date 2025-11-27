@@ -15,6 +15,7 @@ const INITIAL_CONFIG: FireworkConfig = {
   hueVariance: 30,
   baseSize: 2,
   trailEffect: true,
+  starfield: true,
 };
 
 const App: React.FC = () => {
